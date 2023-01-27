@@ -31,6 +31,8 @@ export default{
 
 .link{
   cursor: pointer;
+  color: black;
+  font-weight: bold;
   padding: 1rem;
   background-color: rgba($color: #d3d3d3, $alpha: .7);
   border-radius: 1rem;

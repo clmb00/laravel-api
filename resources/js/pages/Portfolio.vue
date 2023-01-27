@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-import ProjectCard from '../components/PaginationNav.vue';
+import ProjectCard from '../components/ProjectCard.vue';
 import PaginationNav from '../components/PaginationNav.vue';
 
 export default{
