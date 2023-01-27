@@ -18,6 +18,12 @@ class ProjectController extends Controller
     public function show($slug){
         $project = Project::where('slug', $slug)->with(['technologies', 'type'])->first();
 
+        if($project->cover_image){
+            $project->cover_image = url("storage/" . $project->cover_image);
+        } else {
+            $project->cover_image = url("storage/uploads/placeholder.jpg");
+        }
+
         return response()->json($project);
     }
 }
