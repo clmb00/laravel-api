@@ -5,11 +5,13 @@ import axios from 'axios';
 import ProjectCard from '../components/ProjectCard.vue';
 import PaginationNav from '../components/PaginationNav.vue';
 
+import { url } from "../data/data";
+
 export default{
   name: 'Portfolio',
   data(){
     return{
-      url: 'http://127.0.0.1:8000/api/projects',
+      url,
       projects: [],
       links: []
     }
@@ -24,7 +26,7 @@ export default{
           .then(result=>{
             this.projects = result.data.projects.data;
             this.links = result.data.projects.links;
-            console.log(result.data.projects.links);
+            console.log(this.projects);
           })
     }
   },
@@ -43,6 +45,7 @@ export default{
       <ProjectCard
         v-for="project in projects" :key="project.id"
         :title="project.name"
+        :slug="project.slug"
         :client="project.client_name"
         :type="project.type.name"
         :technologies="project.technologies"
