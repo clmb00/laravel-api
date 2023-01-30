@@ -50,8 +50,6 @@ class ProjectController extends Controller
 
     public function filter_tech($id){
 
-        $techs = Technology::where('id', $id)->first();
-
         $projects = Project::with(['technologies', 'type'])
                 ->join('project_technology', 'projects.id', '=', 'project_technology.project_id')
                 ->where('technology_id', 'like', $id)

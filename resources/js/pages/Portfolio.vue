@@ -11,12 +11,15 @@ export default{
   name: 'Portfolio',
   data(){
     return{
-      url,
+      base_url: url,
       projects: [],
       links: [],
+      types: [],
+      technologies: [],
       searchWhere: "",
       searchWhat: "",
-      newUrl: ""
+      newUrl: "",
+      tagActive: ''
     }
   },
   components:{
@@ -34,19 +37,32 @@ export default{
           .then(result=>{
             this.projects = result.data.projects.data;
             this.links = result.data.projects.links;
+            if(result.data.types){
+              this.types = result.data.types;
+            }
+            if(result.data.technologies){
+              this.technologies = result.data.technologies;
+            }
             console.log(this.links);
+            console.log(this.projects);
           })
 
     },
     callSearch(){
       if(this.searchWhere){
-        this.newUrl = url + '/search?what=' + this.searchWhat + '&where=' + this.searchWhere;
+        this.newUrl = this.base_url + '/search?what=' + this.searchWhat + '&where=' + this.searchWhere;
         this.callApi(this.newUrl);
       }
+    },
+    callFilterType(id){
+      this.callApi(this.base_url + '/filter-type/' + id);
+    },
+    callFilterTech(id){
+      this.callApi(this.base_url + '/filter-tech/' + id);
     }
   },
   mounted(){
-    this.callApi(this.url);
+    this.callApi(this.base_url);
   }
 }
 
@@ -71,7 +87,22 @@ export default{
       <button @click="callSearch"><i class="fa-solid fa-magnifying-glass"></i></button>
     </div>
 
+    <div class="types">
+      <span>Types: </span>
+      <div class="tag" v-for="elem in types" :key="'type-' + elem.id" @click="callFilterType(elem.id); tagActive = elem.slug" :class="tagActive == elem.slug ? 'tagActive' : ''">
+        {{ elem.name }}
+      </div>
+    </div>
+
+    <div class="technos">
+      <span>Technologies: </span>
+      <div class="tag" v-for="elem in technologies" :key="'tech-' + elem.id" @click="callFilterTech(elem.id); tagActive = elem.slug" :class="tagActive == elem.slug ? 'tagActive' : ''">
+        {{ elem.name }}
+      </div>
+    </div>
+
     <div class="card_wrapper">
+      <h2 v-show="!projects.length">No project found.</h2>
       <ProjectCard
         v-for="project in projects" :key="project.id"
         :title="project.name"
@@ -83,6 +114,7 @@ export default{
       />
     </div>
     <PaginationNav
+      v-show="projects.length"
       :links="links"
       @callApi="callApi"
     />
@@ -104,7 +136,7 @@ export default{
     background-color: rgba($color: #FFF, $alpha: .9);
     padding: .6rem 1rem;
     border-radius: 1rem;
-    margin-block: 1rem;
+    margin-block: .5rem;
     min-width: 25%;
     &:focus{
       outline: 2px solid #deb887;
@@ -129,6 +161,25 @@ export default{
 
   span{
     margin-inline: .5rem;
+  }
+}
+
+.types, .technos{
+  text-align: end;
+}
+
+.tag{
+  cursor: pointer;
+  display: inline-block;
+  padding: .5rem 1rem;
+  border-radius: 50px;
+  background-color: #deb8872f;
+  margin: .5rem .25rem;
+  &:hover{
+    background-color: #deb8875a;
+  }
+  &.tagActive{
+    background-color: #deb887;
   }
 }
 
