@@ -26,4 +26,11 @@ class ProjectController extends Controller
 
         return response()->json($project);
     }
+
+    public function search(){
+
+        $projects = Project::where($_GET['where'], 'like', '%' . $_GET['what'] . '%')->with(['technologies', 'type'])->paginate(5);
+
+        return response()->json(compact('projects'));
+    }
 }
