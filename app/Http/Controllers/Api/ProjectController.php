@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\Technology;
 use App\Models\Type;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
@@ -43,6 +44,18 @@ class ProjectController extends Controller
     public function filter_type($id){
 
         $projects = Project::where('type_id', $id)->with(['technologies', 'type'])->paginate(5);
+
+        return response()->json(compact('projects'));
+    }
+
+    public function filter_tech($id){
+
+        $techs = Technology::where('id', $id)->first();
+
+        $projects = Project::with(['technologies', 'type'])
+                ->join('project_technology', 'projects.id', '=', 'project_technology.project_id')
+                ->where('technology_id', 'like', $id)
+                ->paginate(5);
 
         return response()->json(compact('projects'));
     }
